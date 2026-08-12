@@ -1,0 +1,19 @@
+{
+  "id": "example",
+  "version": "0.1.0",
+  "minCoreVersion": "0.9.0",
+  "pricing": { "model": "free" },
+  "publisher": { "id": "bytedesk", "name": "ByteDesk" },
+  "nav": [
+    { "id": "example", "label": "Example plugin", "icon": "◆", "href": "/?view=example", "order": 90 }
+  ],
+  "panels": [
+    { "id": "example", "kind": "example", "url": "/p/example/ui" }
+  ],
+  "launchers": [],
+  "scopes": ["plugin:example"],
+  "routes": ["/p/example/"],
+  "spawn": true,
+  "binary": "example",
+  "socket": "plugin.sock"
+}
