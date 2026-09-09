@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0-rc.3] - 2026-09-09
+
+### Added
+
+- Independent DOM module with canonical document-route claims, payload-first location updates, scoped navigation, and idempotent activation cleanup.
+- Explicit linked and spawned host authorization, admitted-request draining, and private readiness endpoint guidance.
+- Browser lifecycle conformance for navigation, withdrawal, remounting, and failed-mount rollback.
+- Executable conformance rejects hosts lacking the required document-route and module-mount features before socket publication.
+
+### Changed
+
+- Adopt Gateway SDK v0.4.0-rc.6 and common SDK v0.4.0-rc.5.
+
 ## [0.2.0-rc.2] - 2026-09-09
 
 ### Changed

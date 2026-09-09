@@ -34,11 +34,17 @@ func TestIndependentProcessAdmissionAndWithdrawal(t *testing.T) {
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v: %s", err, out)
 	}
-	for _, allowed := range []bool{false, true} {
-		name := "denied"
-		if allowed {
-			name = "admitted"
-		}
+	for _, tc := range []struct {
+		name     string
+		allowed  bool
+		features []string
+		admitted bool
+	}{
+		{name: "denied"},
+		{name: "missing-ui-contract", allowed: true, features: []string{sdk.FeatureScopedHost, sdk.FeatureActivationCheck}},
+		{name: "admitted", allowed: true, admitted: true, features: []string{sdk.FeatureScopedHost, sdk.FeatureActivationCheck, sdk.FeatureDocumentPaths, sdk.FeatureUIModuleMount}},
+	} {
+		name := tc.name
 		t.Run(name, func(t *testing.T) {
 			hostSock := filepath.Join(dir, name+"-host.sock")
 			pluginSock := filepath.Join(dir, name+"-plugin.sock")
@@ -49,11 +55,11 @@ func TestIndependentProcessAdmissionAndWithdrawal(t *testing.T) {
 			srv := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
 				case "/negotiate":
-					if !allowed {
+					if !tc.allowed {
 						http.Error(w, "policy denied", http.StatusForbidden)
 						return
 					}
-					_ = json.NewEncoder(w).Encode(sdk.HostCapabilities{Major: 1, PluginID: "example", Generation: "fixture-generation", Features: []string{sdk.FeatureScopedHost, sdk.FeatureActivationCheck}})
+					_ = json.NewEncoder(w).Encode(sdk.HostCapabilities{Major: 1, PluginID: "example", Generation: "fixture-generation", Features: tc.features})
 				case "/callbacks":
 					w.WriteHeader(http.StatusOK)
 					w.(http.Flusher).Flush()
@@ -77,7 +83,7 @@ func TestIndependentProcessAdmissionAndWithdrawal(t *testing.T) {
 			done := make(chan error, 1)
 			go func() { done <- cmd.Wait() }()
 			t.Cleanup(func() { _ = cmd.Process.Kill() })
-			if !allowed {
+			if !tc.admitted {
 				select {
 				case err := <-done:
 					if err == nil {

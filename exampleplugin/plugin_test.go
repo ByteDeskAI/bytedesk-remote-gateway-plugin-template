@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -64,5 +65,23 @@ func TestPackageManifestMatchesImplementation(t *testing.T) {
 	}
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestModuleAssetUsesIndependentMountContract(t *testing.T) {
+	p := New()
+	if err := p.Start(context.Background(), testHost{}); err != nil {
+		t.Fatal(err)
+	}
+	w := httptest.NewRecorder()
+	p.Handler().ServeHTTP(w, httptest.NewRequest("GET", "/example/panel.mjs", nil))
+	if w.Code != 200 || w.Header().Get("Content-Type") != "text/javascript; charset=utf-8" || !strings.Contains(w.Body.String(), "export function mount(element, host)") {
+		t.Fatalf("module asset response: %d, %s", w.Code, w.Header().Get("Content-Type"))
+	}
+	_ = p.Stop(context.Background())
+	w = httptest.NewRecorder()
+	p.Handler().ServeHTTP(w, httptest.NewRequest("GET", "/example/panel.mjs", nil))
+	if w.Code != 503 {
+		t.Fatal("withdrawn module still served")
 	}
 }

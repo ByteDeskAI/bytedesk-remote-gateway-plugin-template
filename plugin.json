@@ -1,6 +1,6 @@
 {
   "id": "example",
-  "version": "0.2.0-rc.2",
+  "version": "0.2.0-rc.3",
   "nav": [
     {
       "id": "example",
@@ -13,7 +13,12 @@
     {
       "id": "example",
       "kind": "example",
-      "url": "/example/ui"
+      "url": "/example/ui",
+      "module": "/example/panel.mjs",
+      "documentPaths": [
+        "/example",
+        "/example/view/:item"
+      ]
     }
   ],
   "scopes": [
@@ -32,7 +37,9 @@
     "major": 1,
     "required": [
       "host.scoped.v1",
-      "activation.check.v1"
+      "activation.check.v1",
+      "ui.document-paths.v1",
+      "ui.mount.v1"
     ]
   },
   "permissions": {}

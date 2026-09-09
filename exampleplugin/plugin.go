@@ -3,6 +3,7 @@ package example
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"net/http"
 	"sync/atomic"
@@ -10,7 +11,10 @@ import (
 	pluginsdk "github.com/ByteDeskAI/bytedesk-remote-gateway-plugin-sdk"
 )
 
-const Version = "0.2.0-rc.2"
+const Version = "0.2.0-rc.3"
+
+//go:embed panel.mjs
+var panelModule []byte
 
 type Plugin struct{ active atomic.Bool }
 
@@ -22,8 +26,8 @@ func (p *Plugin) Manifest() pluginsdk.Manifest {
 		Spawn: true, Binary: "example", Socket: "plugin.sock",
 		Routes: []string{"/example/"}, Scopes: []string{"plugin:example"},
 		Nav:         []pluginsdk.NavItem{{ID: "example", Label: "Example plugin", Href: "/plugins/example", Order: 90}},
-		Panels:      []pluginsdk.PanelSpec{{ID: "example", Kind: "example", URL: "/example/ui"}},
-		Protocol:    &pluginsdk.ProtocolRequirements{Major: pluginsdk.ProtocolMajor, Required: []string{pluginsdk.FeatureScopedHost, pluginsdk.FeatureActivationCheck}},
+		Panels:      []pluginsdk.PanelSpec{{ID: "example", Kind: "example", URL: "/example/ui", Module: "/example/panel.mjs", DocumentPaths: []string{"/example", "/example/view/:item"}}},
+		Protocol:    &pluginsdk.ProtocolRequirements{Major: pluginsdk.ProtocolMajor, Required: []string{pluginsdk.FeatureScopedHost, pluginsdk.FeatureActivationCheck, pluginsdk.FeatureDocumentPaths, pluginsdk.FeatureUIModuleMount}},
 		Permissions: &pluginsdk.Permissions{},
 	}
 }
@@ -59,6 +63,9 @@ func (p *Plugin) Handler() http.Handler {
 			return
 		}
 		switch r.URL.Path {
+		case "/example/panel.mjs":
+			w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+			_, _ = w.Write(panelModule)
 		case "/healthz", "/example/hello":
 			w.Header().Set("Content-Type", "text/plain")
 			_, _ = w.Write([]byte("ok"))
