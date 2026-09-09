@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0-rc.2] - 2026-09-09
+
+### Changed
+
+- Adopt Gateway SDK v0.4.0-rc.5 and common SDK v0.4.0-rc.4 with canonical dependency version constraint validation.
+
 ## [0.2.0-rc.1] - 2026-09-08
 
 ### Changed

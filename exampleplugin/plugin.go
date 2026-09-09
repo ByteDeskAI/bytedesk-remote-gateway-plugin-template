@@ -10,7 +10,7 @@ import (
 	pluginsdk "github.com/ByteDeskAI/bytedesk-remote-gateway-plugin-sdk"
 )
 
-const Version = "0.2.0-rc.1"
+const Version = "0.2.0-rc.2"
 
 type Plugin struct{ active atomic.Bool }
 
