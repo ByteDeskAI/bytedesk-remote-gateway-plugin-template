@@ -7,3 +7,7 @@
 - Replace the handler-only scaffold with an independently constructed SDK Plugin package and shared ServePlugin entrypoint.
 - Pin released SDK prereleases and remove sibling-directory replacements.
 - Generate plugin.json from the implementation and test lifecycle withdrawal and manifest parity.
+
+### Added
+
+- Built-executable conformance verifies denial before socket publication, admitted serving, and graceful withdrawal without Gateway implementation imports.
