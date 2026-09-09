@@ -1,0 +1,9 @@
+# Changelog
+
+## [0.2.0-rc.1] - 2026-09-08
+
+### Changed
+
+- Replace the handler-only scaffold with an independently constructed SDK Plugin package and shared ServePlugin entrypoint.
+- Pin released SDK prereleases and remove sibling-directory replacements.
+- Generate plugin.json from the implementation and test lifecycle withdrawal and manifest parity.
