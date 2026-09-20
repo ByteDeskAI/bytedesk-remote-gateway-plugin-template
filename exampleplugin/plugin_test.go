@@ -20,6 +20,7 @@ func (testHost) Request(context.Context, pluginsdk.Envelope) (pluginsdk.Envelope
 	return pluginsdk.Envelope{}, nil
 }
 func (testHost) Logger() pluginsdk.Logger           { return nil }
+func (testHost) Profiling() pluginsdk.Profiler      { return pluginsdk.NopProfiler() }
 func (testHost) StateDir(string) string             { return "" }
 func (testHost) Every(time.Duration, func()) func() { return func() {} }
 func (testHost) BumpContributions()                 {}
